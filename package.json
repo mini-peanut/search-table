@@ -1,0 +1,44 @@
+{
+  "name": "search-table",
+  "version": "1.0.0",
+  "description": "基于ant-design的通用中后台管理页",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "antd-tools run dist",
+    "compile": "antd-tools run compile",
+    "clean": "antd-tools run clean",
+    "start": "antd-tools run start",
+    "site": "antd-tools run site",
+    "deploy": "antd-tools run update-self && antd-tools run deploy",
+    "just-deploy": "antd-tools run just-deploy",
+    "pub": "antd-tools run update-self && antd-tools run pub",
+    "prepublish": "antd-tools run guard",
+    "prettier": "prettier -c --write '**/*'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mini-peanut/search-table.git"
+  },
+  "keywords": [
+    "中后台",
+    "ant-design",
+    "管理页"
+  ],
+  "author": "huax",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mini-peanut/search-table/issues"
+  },
+  "homepage": "https://github.com/mini-peanut/search-table#readme",
+  "dependencies": {
+    "@packtracker/webpack-plugin": "^2.0.1",
+    "antd": "^3.19.3",
+    "antd-tools": "^7.3.6",
+    "less": "^3.9.0",
+    "less-loader": "^5.0.0",
+    "prettier": "^1.18.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}
