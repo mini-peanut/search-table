@@ -4,7 +4,7 @@ export interface StandardTable {
 
 }
 
-const StandardTable: React.SFC<StandardTable> = props => (
+const StandardTable: React.SFC<StandardTable> = () => (
     <div>
 
     </div>

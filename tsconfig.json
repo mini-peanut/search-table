@@ -9,7 +9,11 @@
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "target": "es6",
-    "lib": ["dom", "es2017"]
+    "lib": ["dom", "es2017"],
+    "types": [
+      "lodash",
+      "node"
+    ]
   },
   "exclude": ["node_modules", "lib", "es"]
 }
