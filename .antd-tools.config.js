@@ -9,6 +9,7 @@ function finalizeCompile() {
     // prevent json-loader needing in user-side
     const versionFilePath = path.join(process.cwd(), 'lib', 'version', 'index.js');
     const versionFileContent = fs.readFileSync(versionFilePath).toString();
+
     fs.writeFileSync(
       versionFilePath,
       versionFileContent.replace(
