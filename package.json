@@ -2,13 +2,13 @@
   "name": "search-table",
   "version": "1.0.0",
   "description": "基于ant-design的通用中后台管理页",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dist": "antd-tools run dist",
     "compile": "antd-tools run compile",
     "clean": "antd-tools run clean",
     "start": "antd-tools run start",
+    "start:demo": "node scripts/dev-server.js",
     "site": "antd-tools run site",
     "deploy": "antd-tools run update-self && antd-tools run deploy",
     "just-deploy": "antd-tools run just-deploy",
@@ -30,21 +30,30 @@
   "bugs": {
     "url": "https://github.com/mini-peanut/search-table/issues"
   },
+  "main": "lib/index.js",
+  "module": "es/index.js",
   "homepage": "https://github.com/mini-peanut/search-table#readme",
   "dependencies": {
     "@ant-design/create-react-context": "^0.2.4",
+    "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@packtracker/webpack-plugin": "^2.0.1",
     "@types/lodash": "^4.14.134",
     "@types/node": "^12.0.8",
     "antd": "^3.19.3",
-    "antd-tools": "^7.3.6",
+    "antd-tools": "^7.4.0",
     "classnames": "^2.2.6",
-    "less": "^3.9.0",
-    "less-loader": "^5.0.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^2.7.3",
+    "less-loader": "^4.1.0",
     "lodash": "^4.17.11",
     "prettier": "^1.18.2",
+    "progress-bar-webpack-plugin": "^1.12.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "ts-loader": "^6.0.2",
+    "webpack-dev-middleware": "^3.7.0",
+    "webpack-hot-middleware": "^2.25.0"
   }
 }

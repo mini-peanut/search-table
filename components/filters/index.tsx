@@ -1,9 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types';
 import * as _ from 'lodash';
-import { FormComponentProps } from 'antd/lib/form/Form';
-import { ConfigConsumer, ConfigConsumerProps} from "antd/lib/config-provider";
-
 import Button from 'antd/lib/button'
 import Col from 'antd/lib/col'
 import Form from 'antd/lib/form'
@@ -11,6 +8,8 @@ import Input from 'antd/lib/input'
 import Row from 'antd/lib/row'
 import Select from 'antd/lib/select'
 import DatePicker from 'antd/lib/date-picker'
+import { FormComponentProps } from 'antd/lib/form/Form';
+import { ConfigConsumer, ConfigConsumerProps} from "antd/lib/config-provider";
 
 import 'antd/lib/button/style'
 import 'antd/lib/col/style'
@@ -25,7 +24,7 @@ export interface Action {
     text: string
 }
 export interface FiltersProps {
-    columns?: [];
+    columns: [];
     defaultValues: {[key: string]: string},
     form: any;
     moreActions: object[];
@@ -59,6 +58,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
         form: PropTypes.object,
         onSearch: PropTypes.func,
         defaultValues: PropTypes.object,
+        moreActions: PropTypes.array,
         showReset: PropTypes.bool
     };
 
@@ -67,6 +67,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
         form: {},
         onSearch: noop,
         defaultValues: {},
+        moreActions: [],
         showReset: false
     };
 
@@ -100,8 +101,9 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
     renderFilters = ({ getPrefixCls }: ConfigConsumerProps) => {
         const { prefixCls: customizePrefixCls } = this.props;
         const { renderActions, onSubmit } = this;
-        const filterRows = _.chunk(this.props.columns, ColumnsChunkSize);
-        const isLastRowHasFreeSpace = filterRows[filterRows.length - 1].length < 3;
+        const columns = this.props.columns.map((item: {}, key: number) => ({...item, key}));
+        const filterRows = _.chunk(columns, ColumnsChunkSize);
+        const isLastRowHasFreeSpace = filterRows.length && filterRows[filterRows.length - 1].length < 3;
         const prefixCls = getPrefixCls('calendar', customizePrefixCls);
 
         // To support old version react.
@@ -129,15 +131,15 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
           </Col>
         );
 
-        return (
-          <>
-              <Row gutter={Gutter} key={'row' + index}>
-                  {row.map(renderFiltersRow)}
-                  {isLastRowHasFreeSpace && isLastChunk && this.renderActions()}
-              </Row>
-              <Row gutter={Gutter}>{!isLastRowHasFreeSpace && this.renderActions()}</Row>
-          </>
-        );
+        return [
+          <Row gutter={Gutter} key={index}>
+              {row.map(renderFiltersRow)}
+              {isLastRowHasFreeSpace && isLastChunk && this.renderActions()}
+          </Row>,
+          <Row gutter={Gutter} key={'action' + index}>
+              {!isLastRowHasFreeSpace && this.renderActions()}
+          </Row>
+        ]
     };
 
     renderFormControl = (item: FormItem) => {
