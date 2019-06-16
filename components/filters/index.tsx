@@ -104,16 +104,16 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
         const columns = this.props.columns.map((item: {}, key: number) => ({...item, key}));
         const filterRows = _.chunk(columns, ColumnsChunkSize);
         const isLastRowHasFreeSpace = filterRows.length && filterRows[filterRows.length - 1].length < 3;
-        const prefixCls = getPrefixCls('calendar', customizePrefixCls);
+        const prefixCls = getPrefixCls('filter', customizePrefixCls);
 
         // To support old version react.
         // Have to add prefixCls on the instance.
         // https://github.com/facebook/react/issues/12397
         this.prefixCls = prefixCls;
-        const filtersClassName = `${prefixCls}-filters`;
+        const filterClassName = `${prefixCls}-filter`;
 
         return (
-          <div className={filtersClassName}>
+          <div className={filterClassName}>
               <Form onSubmit={onSubmit} layout="inline">
                   {filterRows.map(_.partialRight(this.renderFilterRows, filterRows))}
                   <Row gutter={Gutter}>{!isLastRowHasFreeSpace && renderActions()}</Row>
@@ -175,7 +175,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
 
     renderActions = () => {
         const moreActions = this.props.moreActions;
-        const actionsClassName = `${this.prefixCls}-filters-actions`;
+        const actionsClassName = `${this.prefixCls}-filter-actions`;
         const renderAction = (action: Action, key: number) => {
             const searchQuery = this.props.form.getFieldsValue();
             const handleClick = _.partial(action.onClick, searchQuery);
