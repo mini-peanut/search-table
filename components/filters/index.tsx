@@ -36,7 +36,7 @@ export interface FormItem {
     dataIndex: string;
     type: any;
     options: object[];
-    label: string
+    title: string
 }
 export interface Option {
     text: string,
@@ -127,7 +127,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
         const isLastChunk = index === filterRows.length - 1;
         const renderFiltersRow = (item: FormItem, key: number) => (
           <Col md={8} sm={24} key={key}>
-              <FormItem label={item.label}>{this.renderFormControl(item)}</FormItem>
+              <FormItem label={item.title}>{this.renderFormControl(item)}</FormItem>
           </Col>
         );
 
