@@ -19,6 +19,8 @@ import 'antd/lib/row/style'
 import 'antd/lib/select/style'
 import 'antd/lib/date-picker/style'
 
+import './style/index.less'
+
 export interface Action {
     onClick: (filters: object) => void;
     text: string
@@ -34,7 +36,7 @@ export interface FiltersProps {
 }
 export interface FormItem {
     dataIndex: string;
-    type: any;
+    filterType: any;
     options: object[];
     title: string
 }
@@ -42,6 +44,23 @@ export interface Option {
     text: string,
     value: any
 }
+export const FilterPropTypes = {
+    columns: PropTypes.array,
+    form: PropTypes.object,
+    onSearch: PropTypes.func,
+    defaultValues: PropTypes.object,
+    moreActions: PropTypes.array,
+    showReset: PropTypes.bool
+};
+export const FilterDefaultProps = {
+    columns: [],
+    defaultValues: {},
+    form: {},
+    moreActions: [],
+    onSearch: noop,
+    showReset: false,
+    prefixCls: ''
+};
 
 function noop() {}
 
@@ -53,23 +72,9 @@ const RangePicker = DatePicker.RangePicker;
 const { Option } = Select;
 
 class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
-    static propTypes = {
-        columns: PropTypes.array,
-        form: PropTypes.object,
-        onSearch: PropTypes.func,
-        defaultValues: PropTypes.object,
-        moreActions: PropTypes.array,
-        showReset: PropTypes.bool
-    };
+    static propTypes = FilterPropTypes;
 
-    static defaultProps = {
-        columns: [],
-        form: {},
-        onSearch: noop,
-        defaultValues: {},
-        moreActions: [],
-        showReset: false
-    };
+    static defaultProps = FilterDefaultProps;
 
     private prefixCls?: string;
 
@@ -99,24 +104,24 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
     }
 
     renderFilters = ({ getPrefixCls }: ConfigConsumerProps) => {
+        const columns = this.props.columns
+          .map((item: FormItem, key: number) => ({...item, key}))
+          .filter(item => !!item.filterType);
+
         const { prefixCls: customizePrefixCls } = this.props;
-        const { renderActions, onSubmit } = this;
-        const columns = this.props.columns.map((item: {}, key: number) => ({...item, key}));
         const filterRows = _.chunk(columns, ColumnsChunkSize);
-        const isLastRowHasFreeSpace = filterRows.length && filterRows[filterRows.length - 1].length < 3;
         const prefixCls = getPrefixCls('filter', customizePrefixCls);
 
         // To support old version react.
         // Have to add prefixCls on the instance.
         // https://github.com/facebook/react/issues/12397
         this.prefixCls = prefixCls;
-        const filterClassName = `${prefixCls}-filter`;
+        const filterClassName = `${prefixCls}-form`;
 
         return (
           <div className={filterClassName}>
-              <Form onSubmit={onSubmit} layout="inline">
+              <Form onSubmit={this.onSubmit} layout="inline">
                   {filterRows.map(_.partialRight(this.renderFilterRows, filterRows))}
-                  <Row gutter={Gutter}>{!isLastRowHasFreeSpace && renderActions()}</Row>
               </Form>
           </div>
         );
@@ -151,7 +156,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
           <Option value={value} key={value}>{text}</Option>
         );
 
-        switch (item.type) {
+        switch (item.filterType) {
             case 'select':
                 return getFieldDecorator(item.dataIndex, options)(
                   <Select placeholder="请选择" {...baseProps}>
@@ -175,7 +180,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
 
     renderActions = () => {
         const moreActions = this.props.moreActions;
-        const actionsClassName = `${this.prefixCls}-filter-actions`;
+        const actionsClassName = `${this.prefixCls}-form-actions`;
         const renderAction = (action: Action, key: number) => {
             const searchQuery = this.props.form.getFieldsValue();
             const handleClick = _.partial(action.onClick, searchQuery);

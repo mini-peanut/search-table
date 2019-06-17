@@ -15,6 +15,6 @@ if (
 }
 /* @remove-on-es-build-end */
 
-export { default as Filters } from './filters'
+export { default as Filters } from './filter'
 
 export { default as Table } from './table'

@@ -1,17 +1,22 @@
-import React, { Component } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
-import Filters from '../components/filters'
-import Table from '../components/Table'
+import SearchTable from '../components/search-table'
+import BasicLayout from '@ant-design/pro-layout'
+
+import "antd/lib/card/style"
 import './style.less'
 
+function noop() {}
 const columns = [
   {
     title: '规则名称',
     dataIndex: 'name',
+    filterType: 'input'
   },
   {
     title: '描述',
     dataIndex: 'desc',
+    filterType: 'input'
   },
   {
     title: '服务调用次数',
@@ -21,6 +26,7 @@ const columns = [
     render: (val) => `${val} 万`,
     // mark to display a total number
     needTotal: true,
+    filterType: 'input'
   },
   {
     title: '状态',
@@ -49,19 +55,14 @@ const columns = [
 
 
 
-class App extends Component {
-  render() {
-    const filtersProps = {
-      columns: [{
-        dataIndex: 'ruleName',
-        label: '规则名称'
-      }],
-      moreActions: [{
-        text: '新建',
-        onClick () {}
-      }]
+class App extends React.Component {
+  constructor () {
+    super();
+    this.state = {
+      collapsed: false
     };
-
+  }
+  render() {
     const tableProps = {
       columns,
       dataSource: [],
@@ -69,13 +70,23 @@ class App extends Component {
         currentPage: 1,
         pageSize: 10,
         total: 100
-      }
+      },
+      scroll: {x: 1300},
+      moreActions: [{
+        text: '新建',
+        onClick () {}
+      }]
     };
     return (
-      <div className="app">
-        <Filters {...filtersProps} />
-        <Table {...tableProps} />
-      </div>
+      <BasicLayout
+        collapsed={this.state.collapsed}
+        onCollapse={val => {
+          this.setState({collapsed: val})
+        }}
+        logo={noop}
+      >
+        <SearchTable {...tableProps} />
+      </BasicLayout>
     )
   }
 }

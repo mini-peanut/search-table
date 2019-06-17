@@ -1,10 +1,16 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { LocaleProvider } from 'antd'
 import zh_CN from 'antd/lib/locale-provider/zh_CN'
 import { ConfigConsumer, ConfigConsumerProps} from "antd/lib/config-provider";
-import { ColumnProps, SorterResult, PaginationConfig, TableCurrentDataSource } from 'antd/es/table';
-import { TableListItem } from './data';
+import { PaginationConfig } from 'antd/es/table';
+import {
+  TableProps,
+  TableListItem,
+  TableColumnProps,
+  TableState,
+  Filters,
+  Sorter
+} from './data';
 
 import Table from 'antd/lib/table'
 import Alert from 'antd/lib/alert'
@@ -13,66 +19,35 @@ import 'antd/lib/table/style'
 import 'antd/lib/alert/style'
 import 'antd/lib/icon/style'
 import './style.less'
+import * as PropTypes from "prop-types";
 
-export type Filters = Record<keyof any, string[]>
-export type Sorter = SorterResult<any>
-
-export interface StandardTableProps {
-    columns: any;
-    onSelectRow: (row: any) => void;
-    dataSource: any;
-    rowKey?: string;
-    selectedRows: any[];
-    onChange?: (
-      pagination: PaginationConfig,
-      filters: Filters,
-      sorter: Sorter,
-      extra?: TableCurrentDataSource<any>
-    ) => void;
-    loading?: boolean;
-    pagination: PaginationConfig
-    prefixCls?: string
-}
-
-export type TableColumnProps = ColumnProps<TableListItem> & {
-    needTotal?: boolean;
-    total?: number;
+const TablePropTypes = {
+    loading: PropTypes.bool,
+    dataSource: PropTypes.array,
+    columns: PropTypes.array,
+    selectedRows: PropTypes.array,
+    onTableChange: PropTypes.func,
+    rowKey: PropTypes.string
 };
 
-export interface TableState {
-    selectedRowKeys: object[],
-    needTotalList: object[]
-}
+const TableDefaultProps = {
+    loading: false,
+    dataSource: [],
+    columns: [],
+    selectedRows: [],
+    onTableChange: noop
+};
 
-export interface Column {
-    needTotal: boolean,
-    dataIndex: string;
-    label: string;
-}
+export default class extends React.Component<TableProps, TableState> {
+    static propTypes = TablePropTypes;
 
-export default class StandardTable extends React.Component<StandardTableProps, TableState> {
-    static propTypes = {
-        loading: PropTypes.bool,
-        dataSource: PropTypes.array,
-        columns: PropTypes.array,
-        selectedRows: PropTypes.array,
-        onTableChange: PropTypes.func,
-        rowKey: PropTypes.string
-    };
-
-    static defaultProps = {
-        loading: false,
-        dataSource: [],
-        columns: [],
-        selectedRows: [],
-        onTableChange: noop
-    };
+    static defaultProps = TableDefaultProps;
 
     private prefixCls?: string;
 
-    static getDerivedStateFromProps(nextProps: StandardTableProps) {
+    static getDerivedStateFromProps(nextProps: TableProps) {
         // clean state
-        if (nextProps.selectedRows.length === 0) {
+        if (nextProps.selectedRows && nextProps.selectedRows.length === 0) {
             const needTotalList = initTotalList(nextProps.columns);
             return {
                 selectedRowKeys: [],
@@ -82,7 +57,7 @@ export default class StandardTable extends React.Component<StandardTableProps, T
         return null;
     }
 
-    constructor(props: StandardTableProps) {
+    constructor(props: TableProps) {
         super(props);
         const { columns } = props;
         const needTotalList = initTotalList(columns);
@@ -135,7 +110,7 @@ export default class StandardTable extends React.Component<StandardTableProps, T
         // Have to add prefixCls on the instance.
         // https://github.com/facebook/react/issues/12397
         this.prefixCls = prefixCls;
-        const standardTableClassName = `${prefixCls}-standard-table`;
+        const tableClassName = `${prefixCls}-table`;
 
         const paginationProps = {
             showSizeChanger: true,
@@ -152,7 +127,7 @@ export default class StandardTable extends React.Component<StandardTableProps, T
             }),
         };
         return (
-          <div className={standardTableClassName}>
+          <div className={tableClassName}>
               {this.renderAlert()}
               <Table
                 rowKey={rowKey || 'id'}
