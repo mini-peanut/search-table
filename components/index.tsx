@@ -15,6 +15,10 @@ if (
 }
 /* @remove-on-es-build-end */
 
-export { default as Filters } from './filters'
+import SearchTable from './search-table'
+
+export { default as Filters } from './filter'
 
 export { default as Table } from './table'
+
+export default SearchTable

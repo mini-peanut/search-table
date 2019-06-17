@@ -1,6 +1,6 @@
 {
   "name": "search-table",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "基于ant-design的通用中后台管理页",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -35,6 +35,7 @@
   "homepage": "https://github.com/mini-peanut/search-table#readme",
   "dependencies": {
     "@ant-design/create-react-context": "^0.2.4",
+    "@ant-design/pro-layout": "^4.5.5",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@packtracker/webpack-plugin": "^2.0.1",
     "@types/lodash": "^4.14.134",
