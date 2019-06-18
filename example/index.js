@@ -9,14 +9,19 @@ import './style.less'
 function noop() {}
 const columns = [
   {
-    title: '规则名称',
+    title: '字符',
     dataIndex: 'name',
     filterType: 'input'
   },
   {
-    title: '描述',
-    dataIndex: 'desc',
+    title: '字符',
+    dataIndex: 'name2',
     filterType: 'input'
+  },
+  {
+    title: '时间',
+    dataIndex: 'desc',
+    filterType: 'range'
   },
   {
     title: '服务调用次数',
@@ -31,15 +36,13 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'status',
-    render(val) {
-      return <Badge status={statusMap[val]} text={status[val]} />;
-    },
+    filterType: 'input'
   },
   {
     title: '上次调度时间',
     dataIndex: 'updatedAt',
-    sorter: true,
-    render: (val) => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    filterType: 'range',
+    sorter: true
   },
   {
     title: '操作',
@@ -71,7 +74,7 @@ class App extends React.Component {
         pageSize: 10,
         total: 100
       },
-      scroll: {x: 1300},
+      scroll: {x: 1000},
       moreActions: [{
         text: '新建',
         onClick () {}

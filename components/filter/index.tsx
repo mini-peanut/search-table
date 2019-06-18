@@ -7,7 +7,9 @@ import Form from 'antd/lib/form'
 import Input from 'antd/lib/input'
 import Row from 'antd/lib/row'
 import Select from 'antd/lib/select'
+import {LocaleProvider} from "antd";
 import DatePicker from 'antd/lib/date-picker'
+import zh_CN from 'antd/lib/locale-provider/zh_CN'
 import { FormComponentProps } from 'antd/lib/form/Form';
 import { ConfigConsumer, ConfigConsumerProps} from "antd/lib/config-provider";
 
@@ -36,7 +38,7 @@ export interface FiltersProps {
 }
 export interface FormItem {
     dataIndex: string;
-    filterType: any;
+    filterType: string;
     options: object[];
     title: string
 }
@@ -61,6 +63,13 @@ export const FilterDefaultProps = {
     showReset: false,
     prefixCls: ''
 };
+
+export const enum FiltersType {
+    select = 'select',
+    input = 'input',
+    range = 'range',
+    date = 'date'
+}
 
 function noop() {}
 
@@ -100,16 +109,22 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
     };
 
     render() {
-        return <ConfigConsumer>{this.renderFilters}</ConfigConsumer>;
+        return (
+          <LocaleProvider locale={zh_CN}>
+              <ConfigConsumer>{this.renderFilters}</ConfigConsumer>
+          </LocaleProvider>
+        )
     }
 
     renderFilters = ({ getPrefixCls }: ConfigConsumerProps) => {
-        const columns = this.props.columns
+        const columns = _
+          .chain(this.props.columns)
+          .filter((item: FormItem) => !!item.filterType)
           .map((item: FormItem, key: number) => ({...item, key}))
-          .filter(item => !!item.filterType);
+          .value();
 
         const { prefixCls: customizePrefixCls } = this.props;
-        const filterRows = _.chunk(columns, ColumnsChunkSize);
+        const rows = _.chunk(columns, ColumnsChunkSize);
         const prefixCls = getPrefixCls('filter', customizePrefixCls);
 
         // To support old version react.
@@ -121,13 +136,13 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
         return (
           <div className={filterClassName}>
               <Form onSubmit={this.onSubmit} layout="inline">
-                  {filterRows.map(_.partialRight(this.renderFilterRows, filterRows))}
+                  {rows.map(_.partialRight(this.renderFilterRows, rows))}
               </Form>
           </div>
         );
     };
 
-    renderFilterRows = (row: [], index: number, filterRows: object[][]) => {
+    renderFilterRows = (row: object[], index: number, filterRows: object[][]) => {
         const isLastRowHasFreeSpace = filterRows[filterRows.length - 1].length < 3;
         const isLastChunk = index === filterRows.length - 1;
         const renderFiltersRow = (item: FormItem, key: number) => (
@@ -142,7 +157,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
               {isLastRowHasFreeSpace && isLastChunk && this.renderActions()}
           </Row>,
           <Row gutter={Gutter} key={'action' + index}>
-              {!isLastRowHasFreeSpace && this.renderActions()}
+              {!isLastRowHasFreeSpace && isLastChunk && this.renderActions()}
           </Row>
         ]
     };
@@ -150,24 +165,24 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
     renderFormControl = (item: FormItem) => {
         const { form: { getFieldDecorator }, defaultValues } = this.props;
         const options = { initialValue: defaultValues[item.dataIndex] || '' };
-        const baseProps = { style: { width: '100%', maxWidth: '200px' } };
+        const baseProps = { style: { width: '100%'} };
 
         const renderOption = ({value, text}: Option) =>  (
           <Option value={value} key={value}>{text}</Option>
         );
 
         switch (item.filterType) {
-            case 'select':
+            case FiltersType.select:
                 return getFieldDecorator(item.dataIndex, options)(
                   <Select placeholder="请选择" {...baseProps}>
                     {item.options.map(renderOption)}
                   </Select>
                 );
-            case 'date':
+            case FiltersType.date:
                 return getFieldDecorator(item.dataIndex, options)(
                   <DatePicker {...baseProps} format={DateFormat} />
                 );
-            case 'range':
+            case FiltersType.range:
                 return getFieldDecorator(item.dataIndex, options)(
                   <RangePicker {...baseProps} format={DateFormat} />
                 );

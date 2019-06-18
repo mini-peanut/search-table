@@ -3,7 +3,7 @@ import Table from "../table";
 import Filter from "../filter";
 
 import { Card } from "antd";
-import "antd/lib/card/style"
+import "antd/lib/card/style";
 
 type SearchTableProps = any
 

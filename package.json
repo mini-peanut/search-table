@@ -1,6 +1,6 @@
 {
   "name": "search-table",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "基于ant-design的通用中后台管理页",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "start": "antd-tools run start",
     "start:demo": "node scripts/dev-server.js",
     "site": "antd-tools run site",
-    "deploy": "antd-tools run update-self && antd-tools run deploy",
+    "deploy": "antd-toolscl run update-self && antd-tools run deploy",
     "just-deploy": "antd-tools run just-deploy",
     "pub": "antd-tools run update-self && antd-tools run pub",
     "prepublish": "antd-tools run guard",
