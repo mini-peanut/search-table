@@ -21,7 +21,10 @@ const columns = [
   {
     title: '时间',
     dataIndex: 'desc',
-    filterType: 'range'
+    filterType: 'range',
+    controlProps: {
+      format: 'YYYY-MM-DD: hh:mm:ss'
+    }
   },
   {
     title: '服务调用次数',
@@ -71,7 +74,7 @@ class App extends React.Component {
       dataSource: [],
       pagination: {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 20,
         total: 100
       },
       scroll: {x: 1000},

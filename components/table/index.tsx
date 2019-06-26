@@ -27,7 +27,8 @@ const TablePropTypes = {
     columns: PropTypes.array,
     selectedRows: PropTypes.array,
     onTableChange: PropTypes.func,
-    rowKey: PropTypes.string
+    rowKey: PropTypes.string,
+    pagination: PropTypes.object
 };
 
 const TableDefaultProps = {

@@ -37,6 +37,7 @@ export interface FiltersProps {
     prefixCls: string
 }
 export interface FormItem {
+    controlProps: object;
     dataIndex: string;
     filterType: string;
     options: object[];
@@ -145,18 +146,30 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
     renderFilterRows = (row: object[], index: number, filterRows: object[][]) => {
         const isLastRowHasFreeSpace = filterRows[filterRows.length - 1].length < 3;
         const isLastChunk = index === filterRows.length - 1;
-        const renderFiltersRow = (item: FormItem, key: number) => (
-          <Col md={8} sm={24} key={key}>
-              <FormItem label={item.title}>{this.renderFormControl(item)}</FormItem>
-          </Col>
-        );
+        const renderFiltersRow = (item: FormItem, key: number) => {
+            const colProps = {md: 6, sm: 24, style: {paddingLeft: 0, paddingRight: 0}};
+            if (item.filterType === FiltersType.range) {
+                colProps.md = 12
+            }
+            return (
+              <Col {...colProps} key={key}>
+                  <FormItem label={item.title}>{this.renderFormControl(item)}</FormItem>
+              </Col>
+            )
+        };
 
+        const rowProps = {
+            style: {
+                marginLeft: '0',
+                marginRight: '0'
+            }
+        }
         return [
-          <Row gutter={Gutter} key={index}>
+          <Row gutter={Gutter} key={index} {...rowProps}>
               {row.map(renderFiltersRow)}
               {isLastRowHasFreeSpace && isLastChunk && this.renderActions()}
           </Row>,
-          <Row gutter={Gutter} key={'action' + index}>
+          <Row gutter={Gutter} key={'action' + index} {...rowProps}>
               {!isLastRowHasFreeSpace && isLastChunk && this.renderActions()}
           </Row>
         ]
@@ -165,7 +178,8 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
     renderFormControl = (item: FormItem) => {
         const { form: { getFieldDecorator }, defaultValues } = this.props;
         const options = { initialValue: defaultValues[item.dataIndex] || '' };
-        const baseProps = { style: { width: '100%'} };
+        const controlProps = item.controlProps ? item.controlProps: {};
+        const baseProps = { style: { width: '100%'}, ...controlProps};
 
         const renderOption = ({value, text}: Option) =>  (
           <Option value={value} key={value}>{text}</Option>
@@ -180,11 +194,11 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
                 );
             case FiltersType.date:
                 return getFieldDecorator(item.dataIndex, options)(
-                  <DatePicker {...baseProps} format={DateFormat} />
+                  <DatePicker format={DateFormat} {...baseProps} />
                 );
             case FiltersType.range:
                 return getFieldDecorator(item.dataIndex, options)(
-                  <RangePicker {...baseProps} format={DateFormat} />
+                  <RangePicker format={DateFormat} {...baseProps} />
                 );
             default:
                 return getFieldDecorator(item.dataIndex, options)(
