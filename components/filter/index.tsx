@@ -34,7 +34,8 @@ export interface FiltersProps {
     moreActions: object[];
     onSearch: (filters: object) => void;
     showReset: boolean,
-    prefixCls: string
+    prefixCls: string,
+    onFieldsChange: (props: [], changeFields: object, allFields: []) => void
 }
 export interface FormItem {
     controlProps: object;
@@ -53,7 +54,8 @@ export const FilterPropTypes = {
     onSearch: PropTypes.func,
     defaultValues: PropTypes.object,
     moreActions: PropTypes.array,
-    showReset: PropTypes.bool
+    showReset: PropTypes.bool,
+    onFieldsChange: PropTypes.func
 };
 export const FilterDefaultProps = {
     columns: [],
@@ -62,7 +64,8 @@ export const FilterDefaultProps = {
     moreActions: [],
     onSearch: noop,
     showReset: false,
-    prefixCls: ''
+    prefixCls: '',
+    onFieldsChange: noop
 };
 
 export const enum FiltersType {
@@ -163,7 +166,7 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
                 marginLeft: '0',
                 marginRight: '0'
             }
-        }
+        };
         return [
           <Row gutter={Gutter} key={index} {...rowProps}>
               {row.map(renderFiltersRow)}
@@ -229,4 +232,10 @@ class Filter extends React.Component<FiltersProps & FormComponentProps, any> {
 }
 
 // @ts-ignore
-export default Form.create<FiltersProps>({})(Filter)
+export default Form.create<FiltersProps>({
+    onFieldsChange(props, changedFields) {
+        // @ts-ignore
+        props.onFieldsChange && props.onFieldsChange(changedFields);
+    }
+    // @ts-ignore
+})(Filter)

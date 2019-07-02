@@ -81,7 +81,10 @@ class App extends React.Component {
       moreActions: [{
         text: '新建',
         onClick () {}
-      }]
+      }],
+      onFieldsChange (val) {
+        console.log(val)
+      }
     };
     return (
       <BasicLayout
