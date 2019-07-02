@@ -54,7 +54,8 @@ export interface TableProps {
   ) => void;
   loading?: boolean;
   pagination?: PaginationConfig
-  prefixCls?: string
+  prefixCls?: string,
+  onCleanSelectedKeys: () => void
 }
 
 export type TableColumnProps = ColumnProps<TableListItem> & {

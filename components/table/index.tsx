@@ -27,6 +27,7 @@ const TablePropTypes = {
     columns: PropTypes.array,
     selectedRows: PropTypes.array,
     onTableChange: PropTypes.func,
+    onCleanSelectedKeys: PropTypes.func,
     rowKey: PropTypes.string,
     pagination: PropTypes.object
 };
@@ -36,7 +37,8 @@ const TableDefaultProps = {
     dataSource: [],
     columns: [],
     selectedRows: [],
-    onTableChange: noop
+    onTableChange: noop,
+    onCleanSelectedKeys: noop
 };
 
 export default class extends React.Component<TableProps, TableState> {
@@ -93,6 +95,9 @@ export default class extends React.Component<TableProps, TableState> {
 
     cleanSelectedKeys = () => {
         this.handleRowSelectChange([], []);
+        if (this.props.onCleanSelectedKeys) {
+            this.props.onCleanSelectedKeys()
+        }
     };
 
     render () {
